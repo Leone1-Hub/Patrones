@@ -6,12 +6,20 @@ import java.util.List;
 
 public class ProductosD extends Articulos {
     
-    private Descuentos descuento;
+    private static ProductosD instance;
+    private DescuentosMFactory descuento;
 
-    public ProductosD(String nombre, double precio, double porcentajeDescuento) {
+    private ProductosD(String nombre, double precio, double porcentajeDescuento) {
         super(nombre, precio);
-        this.descuento = new Descuentos(porcentajeDescuento);
-        setCaracteristica(descuento); // Establece la característica en el artículo base
+        this.descuento = new DescuentosMFactory(porcentajeDescuento);
+        setCaracteristica(descuento); 
+    }
+
+    public static ProductosD getInstance(String nombre, double precio, double porcentajeDescuento) {
+        if (instance == null) {
+            instance = new ProductosD(nombre, precio, porcentajeDescuento);
+        }
+        return instance;
     }
 
     @Override
