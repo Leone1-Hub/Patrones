@@ -1,5 +1,6 @@
 
 package store;
+import Interfaces.IProducto;
 
 public class Producto implements IProducto {
     private String descripcion;

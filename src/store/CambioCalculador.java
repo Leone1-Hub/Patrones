@@ -1,5 +1,7 @@
 
 package store;
+import Interfaces.VerificadorDePago;
+import Interfaces.CalculadoraCambio;
 import java.text.DecimalFormat;
 
 public class CambioCalculador implements CalculadoraCambio, VerificadorDePago {

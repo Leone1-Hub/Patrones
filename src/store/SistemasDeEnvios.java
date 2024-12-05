@@ -1,6 +1,8 @@
 
 package store;
 
+import Interfaces.IEnvio;
+
 public class SistemasDeEnvios {
    private IEnvio envio;
    

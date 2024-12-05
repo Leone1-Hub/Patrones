@@ -1,6 +1,8 @@
 
 package store;
 
+import Interfaces.Envio;
+
 public class EnvioBase implements Envio {
     private double precio;
     private String descripcion;

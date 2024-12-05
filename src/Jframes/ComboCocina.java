@@ -2,6 +2,8 @@
 package Jframes;
 import javax.swing.*;
 import store.ComboProducto;
+import store.InventarioMemoryFacade;
+import store.InventarioProxy;
 import store.Producto;
 
 public class ComboCocina extends javax.swing.JFrame {
@@ -193,47 +195,60 @@ public class ComboCocina extends javax.swing.JFrame {
 
     private void btPagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btPagarActionPerformed
         try {
-            // Obtener las cantidades de los productos
-            String cantidad1 = etCantidad1.getText();
-            String cantidad2 = etCantidad2.getText();
-            String cantidad3 = etCantidad3.getText();
+        // Obtener las cantidades de los productos
+        String cantidad1 = etCantidad1.getText();
+        String cantidad2 = etCantidad2.getText();
+        String cantidad3 = etCantidad3.getText();
 
-            // Validar que las cantidades no estén vacías
-            if (cantidad1.isEmpty() || cantidad2.isEmpty() || cantidad3.isEmpty()) {
-                JOptionPane.showMessageDialog(null, "Por favor, ingrese todas las cantidades.");
-                return; // Salir del método si hay campos vacíos
-            }
+        // Validar que las cantidades no estén vacías
+        if (cantidad1.isEmpty() || cantidad2.isEmpty() || cantidad3.isEmpty()) {
+            // Si hay campos vacíos, puedes optar por mostrar un mensaje en el campo de texto o en un JLabel
+            // Aquí no se muestra un JOptionPane
+            return; // Salir del método si hay campos vacíos
+        }
 
-            int c1 = Integer.parseInt(cantidad1);
-            int c2 = Integer.parseInt(cantidad2);
-            int c3 = Integer.parseInt(cantidad3);
+        // Validar que las cantidades sean numéricas
+        if (!cantidad1.matches("\\d+") || !cantidad2.matches("\\d+") || !cantidad3.matches("\\d+")) {
+            // Aquí tampoco se muestra un JOptionPane
+            return; // Salir si las cantidades no son válidas
+        }
 
-            // Actualizar las cantidades de los productos en el combo
-            combo.actualizarCantidad(0, c1);
-            combo.actualizarCantidad(1, c2);
-            combo.actualizarCantidad(2, c3);
+        int c1 = Integer.parseInt(cantidad1);
+        int c2 = Integer.parseInt(cantidad2);
+        int c3 = Integer.parseInt(cantidad3);
 
-            // Calcular el precio total del combo
-            double precioTotal = combo.getPrecio();
+        // Actualizar las cantidades de los productos en el combo
+        combo.actualizarCantidad(0, c1);
+        combo.actualizarCantidad(1, c2);
+        combo.actualizarCantidad(2, c3);
 
-            // Aplicar IGV
-            double descuento = 0.21;
-            double precioConIGV = precioTotal + descuento;
+        // Calcular el precio total del combo
+        double precioTotal = combo.getPrecio();
 
-            // Asegurarse de que el precio no sea menor que cero
-            if (precioConIGV < 0) {
-                precioConIGV = 0;
-            }
+        // Aplicar IGV
+        double descuento = 0.21; // Asegúrate de que este valor sea correcto para tu lógica
+        double precioConIGV = precioTotal + descuento;
 
-            JOptionPane.showMessageDialog(null, "El precio total del combo es: S/" + precioConIGV);
+        // Asegurarse de que el precio no sea menor que cero
+        if (precioConIGV < 0) {
+            precioConIGV = 0;
+        }
 
-            // Procesar el pago
-            this.setVisible(false);
-            VentaDetalles ventana3 = new VentaDetalles();
-            ventana3.cantidades(cantidad1, cantidad2, cantidad3, "0"); // Pasar "0" para cantidad4
-            ventana3.setVisible(true);  
+        // Procesar el pago
+        this.setVisible(false);
+        InventarioMemoryFacade inventarioReal = new InventarioMemoryFacade();
+        InventarioProxy proxy = new InventarioProxy(inventarioReal, "administrador"); // o "empleado"
+
+        VentaDetalles ventana3 = new VentaDetalles(proxy, true); // Pasar true para deshabilitar el botón
+        ventana3.setVisible(true);
+        
+        // Actualizar el total a pagar en la ventana de detalles
+        ventana3.actualizarTotalPagar("S/" + precioConIGV);
+
+        ventana3.cantidades(cantidad1, cantidad2, cantidad3, "0"); // Pasar "0" para cantidad4
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(null, "Por favor, ingrese valores numéricos válidos para las cantidades.");
+            // Manejo de errores, pero sin mostrar JOptionPane
+        } catch (Exception e) {
         }
     }//GEN-LAST:event_btPagarActionPerformed
     

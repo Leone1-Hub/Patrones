@@ -1,10 +1,11 @@
 
 package store;
 
+import Interfaces.IInventario;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InventarioMemoryFacade{
+public class InventarioMemoryFacade implements IInventario{
     private Map<String, Articulos> inventario;
 
     public InventarioMemoryFacade() { // constructor
@@ -46,4 +47,10 @@ public class InventarioMemoryFacade{
      public Map<String, Articulos> getInventario() {
         return this.inventario;
     }
+
+    @Override
+    public Map<String, Articulos> obtenerInventario() {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+   
 }

@@ -1,6 +1,8 @@
 
 package store;
 
+import Interfaces.VerificadorDePago;
+
 public class VerificadorDePagoImpl implements VerificadorDePago {
     
     @Override

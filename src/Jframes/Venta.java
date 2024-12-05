@@ -2,6 +2,8 @@
 package Jframes;
 import Jframes.Login;
 import javax.swing.*;
+import store.InventarioMemoryFacade;
+import store.InventarioProxy;
 
 public class Venta extends javax.swing.JFrame {
 
@@ -360,9 +362,12 @@ public class Venta extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "NO PUEDES INGRESAR CANTIDADES NEGATIVAS");
                 }else{
                     this.setVisible(false);
-                    VentaDetalles ventana3 = new VentaDetalles();
-                    ventana3.cantidades(cantidad1, cantidad2, cantidad3, cantidad4);
-                    ventana3.setVisible(true);
+                     InventarioMemoryFacade inventarioReal = new InventarioMemoryFacade();
+                    InventarioProxy proxy = new InventarioProxy(inventarioReal, "administrador"); // o "empleado"
+                    // Pasar true para deshabilitar el botón de inventario
+                    VentaDetalles ventanaDetalles = new VentaDetalles(proxy, true);
+                    ventanaDetalles.setVisible(true);
+                    ventanaDetalles.cantidades(cantidad1, cantidad2, cantidad3, cantidad4);
                 }
         }          
     }//GEN-LAST:event_btPagarActionPerformed

@@ -6,7 +6,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.*;
 import store.CambioCalculador;
-import store.ProcesadorDePago;
+import Interfaces.ProcesadorDePago;
+import java.util.Random;
+import store.PDFGenerator;
+import store.PDFOpener;
 import store.SistemasDeEnvios;
 
 public class Cambio extends javax.swing.JFrame {
@@ -23,6 +26,7 @@ public class Cambio extends javax.swing.JFrame {
         
             
             btnCerrar.setEnabled(false);    
+            btnEstado.setEnabled(false);  
             String[] monedas = {"Soles", "Dolares"};
             cboMoney.setModel(new javax.swing.DefaultComboBoxModel<>(monedas));
             cboMoney.addActionListener(new ActionListener() {
@@ -63,6 +67,13 @@ public class Cambio extends javax.swing.JFrame {
             }
         });
     }
+    
+     private String obtenerEstadoAleatorio() {
+        String[] estados = {"ESTADO ENVIADO", "ESTADO PENDIENTE"};
+        Random random = new Random();
+        return estados[random.nextInt(estados.length)];
+    }
+     
     private void setupFrame() {
         this.setLocationRelativeTo(null);
         this.setTitle("Cambio");
@@ -77,17 +88,18 @@ public class Cambio extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jPanel1 = new javax.swing.JPanel();
         btnCerrar = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
         txtTotal = new javax.swing.JLabel();
         btCalcular = new javax.swing.JButton();
-        jLabel7 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         txtCambio = new javax.swing.JLabel();
         cboMoney = new javax.swing.JComboBox<>();
-        etCambio = new javax.swing.JTextField();
         txtDireccion = new javax.swing.JTextField();
+        etCambio = new javax.swing.JTextField();
         cbo_Empresa = new javax.swing.JComboBox<>();
         jLabel6 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        btnEstado = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -108,7 +120,7 @@ public class Cambio extends javax.swing.JFrame {
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         btnCerrar.setBackground(new java.awt.Color(255, 255, 0));
-        btnCerrar.setFont(new java.awt.Font("Arial", 3, 24)); // NOI18N
+        btnCerrar.setFont(new java.awt.Font("Arial", 3, 22)); // NOI18N
         btnCerrar.setText("CERRAR VENTA");
         btnCerrar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnCerrar.addActionListener(new java.awt.event.ActionListener() {
@@ -116,7 +128,12 @@ public class Cambio extends javax.swing.JFrame {
                 btnCerrarActionPerformed(evt);
             }
         });
-        jPanel1.add(btnCerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 420, 220, 60));
+        jPanel1.add(btnCerrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 420, 190, 60));
+
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel7.setText("S/");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 30, -1));
 
         txtTotal.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         txtTotal.setForeground(new java.awt.Color(255, 255, 255));
@@ -134,11 +151,6 @@ public class Cambio extends javax.swing.JFrame {
             }
         });
         jPanel1.add(btCalcular, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 140, 110, 30));
-
-        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel7.setText("S/");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 90, 30, -1));
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(255, 255, 255));
@@ -161,6 +173,12 @@ public class Cambio extends javax.swing.JFrame {
         });
         jPanel1.add(cboMoney, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 140, -1, -1));
 
+        txtDireccion.setBackground(new java.awt.Color(204, 204, 255));
+        txtDireccion.setFont(new java.awt.Font("Segoe UI", 3, 15)); // NOI18N
+        txtDireccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtDireccion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
+        jPanel1.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, 340, 60));
+
         etCambio.setBackground(new java.awt.Color(0, 102, 102));
         etCambio.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         etCambio.setForeground(new java.awt.Color(255, 255, 255));
@@ -172,12 +190,6 @@ public class Cambio extends javax.swing.JFrame {
             }
         });
         jPanel1.add(etCambio, new org.netbeans.lib.awtextra.AbsoluteConstraints(290, 90, 90, -1));
-
-        txtDireccion.setBackground(new java.awt.Color(204, 204, 255));
-        txtDireccion.setFont(new java.awt.Font("Segoe UI", 3, 15)); // NOI18N
-        txtDireccion.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtDireccion.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 3));
-        jPanel1.add(txtDireccion, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 340, 340, 60));
 
         cbo_Empresa.setBackground(new java.awt.Color(204, 204, 255));
         cbo_Empresa.setFont(new java.awt.Font("Segoe UI", 1, 13)); // NOI18N
@@ -193,6 +205,17 @@ public class Cambio extends javax.swing.JFrame {
         jLabel9.setForeground(new java.awt.Color(255, 255, 255));
         jLabel9.setText("Cambio");
         jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 190, -1, -1));
+
+        btnEstado.setBackground(new java.awt.Color(255, 153, 153));
+        btnEstado.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+        btnEstado.setText("Estado");
+        btnEstado.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnEstado.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEstadoActionPerformed(evt);
+            }
+        });
+        jPanel1.add(btnEstado, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 420, 120, 60));
 
         getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 460, 510));
 
@@ -245,8 +268,7 @@ public class Cambio extends javax.swing.JFrame {
                 } else {
                     String cambioString = df.format(cambio);
                     txtCambio.setText(cambioString);
-                    // Activar el botón 
-                     btnCerrar.setEnabled(true);
+                    btnCerrar.setEnabled(true);
                 }
             } catch (Exception e) {
                 System.err.println("Error al calcular el cambio:");
@@ -275,8 +297,11 @@ public class Cambio extends javax.swing.JFrame {
 
         double total = Double.parseDouble(totalText);
         double recibido = Double.parseDouble(recibidoText);
-        // Obtener la moneda seleccionada
         String moneda = (String) cboMoney.getSelectedItem();
+        double cambio = Double.parseDouble(txtCambio.getText().replace("S/", "").replace(" ", "").replace(",", ".")); 
+        String TipoEnvio = tipoEnvio;
+        String empresaEnvio = (String) cbo_Empresa.getSelectedItem(); 
+        String direccion = txtDireccion.getText();
 
         // Realizar la comparación con los valores
         if (recibido > 0) {
@@ -286,6 +311,7 @@ public class Cambio extends javax.swing.JFrame {
             panelInfo.add(new JLabel("Total a Pagar: " + total));
             panelInfo.add(new JLabel("Recibido: " + recibido));
             panelInfo.add(new JLabel("Moneda: " + moneda));
+            panelInfo.add(new JLabel("Cambio: " + cambio));
             panelInfo.add(new JLabel("Tipo de Envío: " + tipoEnvio));
             panelInfo.add(new JLabel("Empresa de envío: " + (String) cbo_Empresa.getSelectedItem()));
             panelInfo.add(new JLabel("Dirección: " + txtDireccion.getText()));       
@@ -293,9 +319,20 @@ public class Cambio extends javax.swing.JFrame {
             // Mostrar el JPanel en un JOptionPane
             JOptionPane.showMessageDialog(this, panelInfo, "Información de la Venta", JOptionPane.INFORMATION_MESSAGE);
             
+             // Especifica la ruta del archivo PDF
+            String filePath = "C:/imagenes/report.pdf"; // Asegúrate de que esta ruta sea válida
+
+            // Genera el PDF con los datos
+            PDFGenerator pdfGenerator = new PDFGenerator();
+            pdfGenerator.createPDF(filePath, total, recibido, cambio, moneda, TipoEnvio, empresaEnvio, direccion);
+
+            // Abre el PDF generado
+            PDFOpener pdfOpener = new PDFOpener();
+            pdfOpener.openPDF(filePath);
+            
             // Realizar la acción de venta
-            JOptionPane.showMessageDialog(this, "Venta realizada con éxito");
-            this.dispose();
+            JOptionPane.showMessageDialog(this, "Venta realizada con éxito");  
+            btnEstado.setEnabled(true);  
         } else {
             JOptionPane.showMessageDialog(this, "FALTA DINERO PARA COMPLETAR LA VENTA", "Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -307,7 +344,18 @@ public class Cambio extends javax.swing.JFrame {
     private void cboMoneyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboMoneyActionPerformed
        
     }//GEN-LAST:event_cboMoneyActionPerformed
-     private boolean isNumeric(String str) {
+
+    private void btnEstadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEstadoActionPerformed
+    String estado = obtenerEstadoAleatorio();
+
+    JPanel panelInfo = new JPanel();
+    panelInfo.setLayout(new BoxLayout(panelInfo, BoxLayout.Y_AXIS));
+    panelInfo.add(new JLabel(estado)); // Agregar el estado aleatorio al JPanel
+
+    JOptionPane.showMessageDialog(this, panelInfo, "Estado del Producto: ", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_btnEstadoActionPerformed
+    
+    private boolean isNumeric(String str) {
             try {
              Float.parseFloat(str);
              return true;
@@ -401,6 +449,7 @@ public class Cambio extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btCalcular;
     private javax.swing.JButton btnCerrar;
+    private javax.swing.JButton btnEstado;
     private javax.swing.JComboBox<String> cboMoney;
     private javax.swing.JComboBox<String> cbo_Empresa;
     private javax.swing.JTextField etCambio;

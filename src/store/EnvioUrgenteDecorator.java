@@ -1,6 +1,9 @@
 
 package store;
 
+import Interfaces.EnvioDecorator;
+import Interfaces.Envio;
+
 public class EnvioUrgenteDecorator extends EnvioDecorator {
     public EnvioUrgenteDecorator(Envio envioDecorado) {
         super(envioDecorado);

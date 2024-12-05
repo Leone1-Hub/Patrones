@@ -1,6 +1,7 @@
 
 package store;
 
+import Interfaces.IProducto;
 import java.util.ArrayList;
 import java.util.List;
 

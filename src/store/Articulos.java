@@ -1,23 +1,19 @@
 
 package store;
 
+import Interfaces.CaracteristicaArticulo;
+import Interfaces.ArticlesPrototype;
+
 public class Articulos extends ArticlesPrototype {
-    
     private String nombre;
     private double precio;
-    private CaracteristicaArticulo caracteristica;
+    private Historial historial;
 
     public Articulos(String nombre, double precio) {
         this.nombre = nombre;
         this.precio = precio;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
+        this.historial = new Historial(); 
+        historial.agregarMemento(crearMemento()); // Guardar el precio inicial en el historial
     }
 
     @Override
@@ -30,33 +26,65 @@ public class Articulos extends ArticlesPrototype {
         return precio;
     }
 
+    public Historial getHistorial() {
+        return historial;
+    }
+
+    public void setHistorial(Historial historial) {
+        this.historial = historial;
+    }
+
+    public void setPrecio(double precio) {
+        // Guardar el precio anterior en el historial antes de cambiarlo
+        historial.agregarMemento(crearMemento());
+        this.precio = precio;
+    }
+
+    public PrecioMemento crearMemento() {
+        return new PrecioMemento(precio);
+    }
+
+    public void restaurarDesdeMemento(int index) {
+        PrecioMemento memento = historial.obtenerMemento(index);
+        if (memento != null) {
+            this.precio = memento.getPrecio();
+        } else {
+            System.out.println("Memento no encontrado.");
+        }
+    }
+
     @Override
     public void setCaracteristica(CaracteristicaArticulo caracteristica) {
-        this.caracteristica = caracteristica;
+        // Implementar si es necesario
     }
 
     @Override
     public double getPrecioConDescuento() {
-        if (caracteristica != null) {
-            return caracteristica.aplicarCaracteristica(precio);
-        }
-        return precio;
+        return precio * 0.9; // Ejemplo: 10% de descuento
     }
 
     @Override
     public double getPrecioConDescuento(int cantidad) {
-        double precioConDescuento = getPrecioConDescuento();
-        return precioConDescuento * cantidad;
+        return getPrecioConDescuento() * cantidad;
     }
 
     @Override
     public CaracteristicaArticulo getCaracteristica() {
-        return caracteristica;
+        return null; // Implementar si es necesario
     }
 
     @Override
     public double getPrecioConIGV() {
-        final double IGV = 0.18; // 18% de IGV
-        return getPrecioConDescuento() * (1 + IGV);
+        return precio * 1.18; // Ejemplo: 18% de IGV
+    }
+
+    @Override
+    public String getNombre() {
+        return nombre;
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " - Precio: " + precio;
     }
 }
